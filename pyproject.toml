@@ -8,6 +8,7 @@ packages = [{include = "testing_mongodb"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+pymongo = {extras = ["srv", "tls"], version = "^4.3.3"}
 
 
 [tool.poetry.group.dev.dependencies]
