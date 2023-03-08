@@ -464,6 +464,21 @@ files = [
 ]
 
 [[package]]
+name = "mongoengine"
+version = "0.27.0"
+description = "MongoEngine is a Python Object-Document Mapper for working with MongoDB."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "mongoengine-0.27.0-py3-none-any.whl", hash = "sha256:c3523b8f886052f3deb200b3218bcc13e4b781661e3bea38587cc936c80ea358"},
+    {file = "mongoengine-0.27.0.tar.gz", hash = "sha256:8f38df7834dc4b192d89f2668dcf3091748d12f74d55648ce77b919167a4a49b"},
+]
+
+[package.dependencies]
+pymongo = ">=3.4,<5.0"
+
+[[package]]
 name = "multidict"
 version = "6.0.4"
 description = "multidict implementation"
@@ -880,4 +895,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "c14c801fea3da3066c5df740e78aa06fb3cda585b23dd51539df9f7b9d7bbc37"
+content-hash = "c23fb993ea8b10b12389aca79241cf8d9e9b088b1df0739fa8b26bd4570cbe4f"
