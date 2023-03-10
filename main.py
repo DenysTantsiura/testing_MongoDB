@@ -81,7 +81,7 @@ class OutputAnswer(InterfaceOutput):
 class ExceptValidation(Exception):
     pass
 
-
+'''
 def command_handler(request: list) -> Optional[list]:
     """Main command handler - finder quotes."""
     match request[0]:  # python 3.10+
@@ -108,7 +108,7 @@ def command_handler(request: list) -> Optional[list]:
     result = ['0 found'] if result == [] else result
 
     return result
-
+'''
 
 class Quote_Finder():
     """Main quote finder class."""
@@ -123,7 +123,7 @@ class Quote_Finder():
         while True:
             user_request = InputToParser.listen()
             try:
-                result = command_handler(user_request)
+                result = self.command_handler(user_request)
 
             except (Exception, ExceptValidation) as err:
                 print(err)
@@ -134,6 +134,40 @@ class Quote_Finder():
 
             else:
                 break
+
+    def search_by_author():
+        return
+    
+    def search_by_tag():
+        return
+    
+    @staticmethod
+    def command_handler(request: list) -> Optional[list]:
+        """Main command handler - finder quotes."""
+        match request[0]:  # python 3.10+
+            case 'name':
+                authors = [author.strip() for author in request[1:]]
+                result = [Quote.objects(author=Author.objects(fullname__istartswith=author).first().id) for author in authors]
+                
+            case 'tag':
+                tag = request[1].strip()
+                result = [Quote.objects(tags__icontains=request[1])]
+                
+            case 'tags':
+                tags = [tag.strip() for tag in request[1:]]
+                # https://docs.mongoengine.org/guide/querying.html#string-queries
+                result = [Quote.objects(tags__icontains=tag) for tag in tags]  
+                
+            case 'exit':
+                result = None
+
+            case _:
+                result = []
+                print('Unknown command!')
+
+        result = ['0 found'] if result == [] else result
+
+        return result
 
 
 def create_mongodb() -> None:
