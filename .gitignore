@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 .idea/
 key.txt
+key_redis.txt

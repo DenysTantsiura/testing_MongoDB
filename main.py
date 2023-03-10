@@ -7,6 +7,8 @@ from timeit import default_timer
 
 import pymongo  # pymongo is a driver
 from pymongo.server_api import ServerApi
+import redis
+from redis_lru import RedisLRU
 
 # export PYTHONPATH="${PYTHONPATH}:/1prj/testing_MongoDB/"
 from authentication import get_password
@@ -81,39 +83,19 @@ class OutputAnswer(InterfaceOutput):
 class ExceptValidation(Exception):
     pass
 
-'''
-def command_handler(request: list) -> Optional[list]:
-    """Main command handler - finder quotes."""
-    match request[0]:  # python 3.10+
-        case 'name':
-            authors = [author.strip() for author in request[1:]]
-            result = [Quote.objects(author=Author.objects(fullname__istartswith=author).first().id) for author in authors]
-            
-        case 'tag':
-            tag = request[1].strip()
-            result = [Quote.objects(tags__icontains=request[1])]
-            
-        case 'tags':
-            tags = [tag.strip() for tag in request[1:]]
-            # https://docs.mongoengine.org/guide/querying.html#string-queries
-            result = [Quote.objects(tags__icontains=tag) for tag in tags]  
-            
-        case 'exit':
-            result = None
-
-        case _:
-            result = []
-            print('Unknown command!')
-
-    result = ['0 found'] if result == [] else result
-
-    return result
-'''
 
 class Quote_Finder():
     """Main quote finder class."""
+    # https://dev.to/ramko9999/host-and-use-redis-for-free-51if
+    client = redis.Redis(
+            host='redis-12148.c135.eu-central-1-1.ec2.cloud.redislabs.com',
+            port=12148,
+            password=get_password('key_redis.txt'))
+            
+    cache = RedisLRU(client)
+    
     def __init__(self) -> None:
-        print(f'{COMMAND_DESCRIPTION}\nYour request?\n')
+        print(f'{COMMAND_DESCRIPTION}\n')
 
     def start(self) -> NoReturn:
         """The main function of launching a quote finder that recognize 
@@ -131,27 +113,34 @@ class Quote_Finder():
 
             if result:
                 OutputAnswer.show_out(result)
-
+                
             else:
                 break
 
-    def search_by_author():
-        return
-    
-    def search_by_tag():
-        return
-    
+    @cache
     @staticmethod
-    def command_handler(request: list) -> Optional[list]:
+    def search_by_author(author: str) -> Quote.objects:
+        print('!!! First once without cache!________________________')
+        return Quote.objects(author=Author.objects(fullname__istartswith=author).first().id)
+    
+    @cache
+    @staticmethod
+    def search_by_tag(tag: str) -> Quote.objects:
+        print('!!! First once without cache!________________________')
+        return
+    
+    @classmethod
+    def command_handler(cls, request: list) -> Optional[list]:
         """Main command handler - finder quotes."""
         match request[0]:  # python 3.10+
             case 'name':
                 authors = [author.strip() for author in request[1:]]
-                result = [Quote.objects(author=Author.objects(fullname__istartswith=author).first().id) for author in authors]
+                # result = [Quote.objects(author=Author.objects(fullname__istartswith=author).first().id) for author in authors]
+                result = [Quote_Finder.search_by_author(author) for author in authors]
                 
             case 'tag':
                 tag = request[1].strip()
-                result = [Quote.objects(tags__icontains=request[1])]
+                result = [Quote.objects(tags__icontains=tag)]
                 
             case 'tags':
                 tags = [tag.strip() for tag in request[1:]]
@@ -167,7 +156,7 @@ class Quote_Finder():
 
         result = ['0 found'] if result == [] else result
 
-        return result
+        return result  # Optional[List[Quote.objects]]
 
 
 def create_mongodb() -> None:
