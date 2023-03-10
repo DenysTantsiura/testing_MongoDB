@@ -19,7 +19,7 @@ def rabbitmq_channel() -> tuple:
     rabbitmq_password = get_password(config.get('RABBIT_DEV', 'password'))
     rabbitmq_host = config.get('RABBIT_DEV', 'claster')
     rabbitmq_vhost = config.get('RABBIT_DEV', 'virtual_host')
-    rabbitmq_port = config.get('RABBIT_DEV', 'port')
+    rabbitmq_port = int(config.get('RABBIT_DEV', 'port'))
 
     credentials = pika.PlainCredentials(rabbitmq_user, rabbitmq_password)  # 'guest', 'guest'
     connection = pika.BlockingConnection(pika.ConnectionParameters(
@@ -35,12 +35,14 @@ def rabbitmq_channel() -> tuple:
 def create_connection() -> connect:
     """Connect to cloud MongoDB (cluster on AtlasDB) and return connection."""
     mongo_user = config.get('DB_DEV', 'user')
-    mongodb_pass = config.get('DB_DEV', 'password')
+    # mongodb_pass = config.get('DB_DEV', 'password')
     mongodb_pass = get_password()
     db_name = config.get('DB_DEV', 'db_name')
     domain = config.get('DB_DEV', 'domain')
 
     # connect to cluster on AtlasDB with connection string
-    connect(host=f"""mongodb+srv://{mongo_user}:{mongodb_pass}@{domain}/{db_name}?retryWrites=true&w=majority""", ssl=True)
+    connect(
+        host=f"""mongodb+srv://{mongo_user}:{mongodb_pass}@{domain}/{db_name}?retryWrites=true&w=majority""", ssl=True
+        )
 
     return connect

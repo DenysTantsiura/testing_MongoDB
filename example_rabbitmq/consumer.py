@@ -1,18 +1,14 @@
-import time
-import json
 import sys
-
-# import pika
+import time
 
 # export PYTHONPATH="${PYTHONPATH}:/1prj/testing_MongoDB/"
-from authentication import get_password
-from connect import rabbitmq_channel
+from connect import create_connection, rabbitmq_channel
 from models import Contact
-from connect import create_connection
 
 
 connection, channel = rabbitmq_channel()
-# RabbitMQ завершує роботу(звичайно або аварійно)- забуває про черги та повідомлення, якщо не вказано прапор durable=True щодо черги
+# RabbitMQ завершує роботу(звичайно або аварійно)- забуває про черги та повідомлення,
+# якщо не вказано прапор durable=True щодо черги
 channel.queue_declare(queue='task_queue', durable=True)  # Декларуємо чергу
 print(' [*] Waiting for messages. To exit press CTRL+C')
 
@@ -27,14 +23,13 @@ def sending_to_email(message: str) -> None:
             print(f'The message was sent to the address {contact.fullname} ({contact.email})')
 
 
-'''
-Функція callback повинна обов'язково приймати 4 аргументи:
-ch — поточний канал комунікації (цей об'єкт може перервати виконання циклу всередині start_consuming якщо потрібно);
-method — детальна інформація про повідомлення;
-properties — службова інформація про повідомлення;
-body — тіло повідомлення у форматі bytes рядка.
-'''
 def callback(ch, method, properties, body) -> None:  # параметри - з документації
+    """Функція callback повинна обов'язково приймати 4 аргументи:
+    ch — поточний канал комунікації (цей об'єкт може перервати виконання циклу всередині start_consuming якщо потрібно);
+    method — детальна інформація про повідомлення;
+    properties — службова інформація про повідомлення;
+    body — тіло повідомлення у форматі bytes рядка.
+    """
     # print(f"{ch},\n\n{method},\n\n{properties},\n\n{body}")
     message = body.decode()  # receiving data (body.decode())
     print(f" [x] Received: {message}")
@@ -45,13 +40,14 @@ def callback(ch, method, properties, body) -> None:  # параметри - з �
 
 
 channel.basic_qos(prefetch_count=1)  # rabbitmq кидай по 1 задачі, поки я(costumer) не закінчу
-channel.basic_consume(queue='task_queue', on_message_callback=callback)  #  підключаємось до черги
+channel.basic_consume(queue='task_queue', on_message_callback=callback)  # підключаємось до черги
 
 
 if __name__ == '__main__':
     create_connection()
     try:
         channel.start_consuming()
+
     except KeyboardInterrupt:
         print("Interrupted! Bye!")
         sys.exit(0)

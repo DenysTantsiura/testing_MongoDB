@@ -9,7 +9,7 @@ from connect import create_connection
 NUMBER_OF_CONTACTS = 8
 
 
-def contacts_generator(quantity_of: int=NUMBER_OF_CONTACTS) -> tuple:  # -> generator ()
+def contacts_generator(quantity_of: int = NUMBER_OF_CONTACTS) -> tuple:  # -> generator ()
     """Generate fake contacts (quantity_of)."""
     fake_data = Faker('uk_UA')
 

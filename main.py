@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import NoReturn, Optional
 # from bson.objectid import ObjectId
 import logging
 from pprint import pprint
-from timeit import default_timer
+from typing import NoReturn, Optional
 
 import pymongo  # pymongo is a driver
 from pymongo.server_api import ServerApi
@@ -14,7 +13,7 @@ from redis_lru import RedisLRU
 from authentication import get_password
 from database.seed import upload_authors_to_the_database, upload_quotes_to_the_database
 from database.models import Author, Quote
-# import database.connect
+
 
 logging.basicConfig(level=logging.DEBUG, format='%(threadName)s %(message)s')
 
@@ -90,7 +89,7 @@ class ExceptValidation(Exception):
     pass
 
 
-class Quote_Finder():
+class QuoteFinder:
     """Main quote finder class."""
     # https://dev.to/ramko9999/host-and-use-redis-for-free-51if
     # Redis connect (to connect.py? but @cache, ... but external get_password()...):
@@ -142,14 +141,13 @@ class Quote_Finder():
         match request[0]:  # python 3.10+
             case 'name':
                 authors = [author.strip() for author in request[1:]]
-                # result = [Quote.objects(author=Author.objects(fullname__istartswith=author).first().id) for author in authors]
-                result = [Quote_Finder.search_by_author(author) for author in authors]
+                result = [QuoteFinder.search_by_author(author) for author in authors]
                 
             case 'tag':
                 # tag = request[1].strip()  # if only one! - first, and without cache
                 # result = [Quote.objects(tags__icontains=tag)]
                 tags = [tag.strip() for tag in request[1:]]
-                result = [Quote_Finder.search_by_tag(tag) for tag in tags]
+                result = [QuoteFinder.search_by_tag(tag) for tag in tags]
                 
             case 'tags':
                 tags = [tag.strip() for tag in request[1:]]
@@ -169,13 +167,13 @@ class Quote_Finder():
 
 
 def create_mongodb() -> None:
-    "Створення хмарної бази даних Atlas MongoDB (quoters_book)."
+    """Створення хмарної бази даних Atlas MongoDB (quoters_book)."""
     mongodb_password = get_password()
     #  full driver connection from Database Deployments:
     client = pymongo.MongoClient(
         f'mongodb+srv://tdv:{mongodb_password}@cluster0.7ylfcax.mongodb.net/?retryWrites=true&w=majority',
         server_api=ServerApi('1'))
-    db = client.quoters_book  # звертаємось до неіснуючої БД quoters_book і вона автоматично створюється
+    client.quoters_book  # звертаємось до неіснуючої БД quoters_book і вона автоматично створюється
 
 
 def main():
@@ -188,7 +186,7 @@ def main():
         upload_quotes_to_the_database()
 
     # Пошук цитат за тегом, за ім'ям автора або набором тегів:
-    Quote_Finder().start()
+    QuoteFinder().start()
 
 
 if __name__ == "__main__":

@@ -1,8 +1,7 @@
 from bson.objectid import ObjectId
-import pymongo  # pymongo is a driver
-from pymongo import MongoClient 
-from pymongo.server_api import ServerApi
 
+import pymongo  # pymongo is a driver
+from pymongo.server_api import ServerApi
 
 # export PYTHONPATH="${PYTHONPATH}:/1prj/testing_MongoDB/"
 from authentication import get_password
@@ -16,9 +15,11 @@ client = pymongo.MongoClient(
     server_api=ServerApi('1'))
 db = client.book  # звертаємось до неіснуючої БД book і вона автоматично створюється
 
+
 def create_docs():
     """Створення документів."""
-    result_one = db.cats.insert_one(  # в БД звертаємось до неіснуючої колекції cats і він автоматично створює її та заповнює
+    # в БД звертаємось до неіснуючої колекції cats і вона автоматично створиться та заповнимо її
+    result_one = db.cats.insert_one(
         {
             "name": "barsik",
             "age": 3,

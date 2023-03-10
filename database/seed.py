@@ -2,10 +2,10 @@ import json
 from typing import Any
 
 from database.models import Author, Quote
-import database.connect
+import database.connect  # excessive?
 
 
-def read_json_file(file_path: str, encoding: str='utf-8') -> Any:
+def read_json_file(file_path: str, encoding: str = 'utf-8') -> Any:
     """Read data from json-file, and return data."""
     with open(file_path, 'r', encoding=encoding) as file:
         data = json.load(file)
@@ -39,6 +39,7 @@ def upload_quotes_to_the_database() -> None:
 
         else:
             print(f'Author "{quote["author"]}" is unknown!')
+
 
 if __name__ == "__main__":
     # для завантаження json файлів у хмарну базу даних:

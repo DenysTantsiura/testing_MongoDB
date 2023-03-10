@@ -11,7 +11,7 @@ config = configparser.ConfigParser()
 config.read(CONFIG_FILE)
 
 mongo_user = config.get('DB_DEV', 'user')
-mongodb_pass = config.get('DB_DEV', 'password')
+# mongodb_pass = config.get('DB_DEV', 'password')
 mongodb_pass = get_password()
 db_name = config.get('DB_DEV', 'db_name')
 domain = config.get('DB_DEV', 'domain')

@@ -15,5 +15,5 @@ class Author(Document):
 
 class Quote(Document):
     tags = ListField()
-    author = ReferenceField(Author)  # не рядковим значенням, а Reference fields полем, де зберігається ObjectID з колекції authors
+    author = ReferenceField(Author)  # не рядком, а Reference fields полем, де зберігається ObjectID з колекції authors
     quote = StringField()
