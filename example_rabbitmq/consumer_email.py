@@ -11,9 +11,11 @@ from models import Contact
 from connect import create_connection
 
 
+TYPE_OF_CONSUMER = 'email'
+
 connection, channel = rabbitmq_channel()
 # RabbitMQ завершує роботу(звичайно або аварійно)- забуває про черги та повідомлення, якщо не вказано прапор durable=True щодо черги
-channel.queue_declare(queue='task_queue', durable=True)  # Декларуємо чергу
+channel.queue_declare(queue=TYPE_OF_CONSUMER, durable=True)  # Декларуємо чергу
 print(' [*] Waiting for messages. To exit press CTRL+C')
 
 
@@ -45,10 +47,11 @@ def callback(ch, method, properties, body) -> None:  # параметри - з �
 
 
 channel.basic_qos(prefetch_count=1)  # rabbitmq кидай по 1 задачі, поки я(costumer) не закінчу
-channel.basic_consume(queue='task_queue', on_message_callback=callback)  #  підключаємось до черги
+channel.basic_consume(queue=TYPE_OF_CONSUMER, on_message_callback=callback)  #  підключаємось до черги
 
 
 if __name__ == '__main__':
+    print(f'\tConsumer start working, type: {TYPE_OF_CONSUMER}\n')
     create_connection()
     try:
         channel.start_consuming()

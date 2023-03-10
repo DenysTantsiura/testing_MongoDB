@@ -36,11 +36,12 @@ def load_key(key_file: str=key_file) -> str:
 def get_password(key_file: str=key_file) -> str:
     """Return password from local file or user input in CLI."""
     if pathlib.Path(key_file).exists():
-        print('Ok! Key-file found.')
+        print(f'Ok! Key-file ({key_file}) found.')
         key = load_key(key_file)
 
     else:
-        key: str = input('Enter the KEY:\n')
+        print(f'Can`t find {pathlib.Path(key_file)}')
+        key: str = input(f'Enter the KEY ({key_file}):\n')
         save_key(key, key_file) if key else None
     
     return key
