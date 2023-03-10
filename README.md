@@ -19,4 +19,8 @@ tags: <tag>\tFind by <tags>. Case sensitive, the tags must be separated by comma
 \ttags: deep-thoughts,change
 exit\tTerminate program.
 
-example_rabbitmq - RabbitMQ tasks example.
+example_rabbitmq - RabbitMQ tasks example(organized an imitation of email distribution to contacts with the help of queues).
+
+"""
+RabbitMQ - це програмне забезпечення для черги повідомлень, також відоме як брокер повідомлень або менеджер черг. Простіше кажучи — це програмне забезпечення, де визначаються черги, до яких підключаються застосунки для передачі повідомлення або повідомлень.
+"""
