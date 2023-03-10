@@ -646,6 +646,23 @@ files = [
 ]
 
 [[package]]
+name = "pika"
+version = "1.3.1"
+description = "Pika Python AMQP Client Library"
+category = "main"
+optional = false
+python-versions = ">=3.4"
+files = [
+    {file = "pika-1.3.1-py3-none-any.whl", hash = "sha256:89f5e606646caebe3c00cbdbc4c2c609834adde45d7507311807b5775edac8e0"},
+    {file = "pika-1.3.1.tar.gz", hash = "sha256:beb19ff6dd1547f99a29acc2c6987ebb2ba7c44bf44a3f8e305877c5ef7d2fdc"},
+]
+
+[package.extras]
+gevent = ["gevent"]
+tornado = ["tornado"]
+twisted = ["twisted"]
+
+[[package]]
 name = "platformdirs"
 version = "3.1.0"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
@@ -929,4 +946,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "047927d33b1899b63684bb14f8631596fd9fd45480dfde020b8b80b952a3d653"
+content-hash = "f3fd6ba1183b5e30260fa8631fb52ca21cc0bf2014cf2255957d16ba5e96bea2"

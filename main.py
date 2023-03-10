@@ -93,6 +93,7 @@ class ExceptValidation(Exception):
 class Quote_Finder():
     """Main quote finder class."""
     # https://dev.to/ramko9999/host-and-use-redis-for-free-51if
+    # Redis connect (to connect.py? but @cache, ... but external get_password()...):
     client = redis.Redis(
             host='redis-12148.c135.eu-central-1-1.ec2.cloud.redislabs.com',
             port=12148,
@@ -145,7 +146,7 @@ class Quote_Finder():
                 result = [Quote_Finder.search_by_author(author) for author in authors]
                 
             case 'tag':
-                # tag = request[1].strip()
+                # tag = request[1].strip()  # if only one! - first, and without cache
                 # result = [Quote.objects(tags__icontains=tag)]
                 tags = [tag.strip() for tag in request[1:]]
                 result = [Quote_Finder.search_by_tag(tag) for tag in tags]
