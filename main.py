@@ -34,9 +34,15 @@ class InterfaceOutput(ABC):
 
 
 COMMAND_DESCRIPTION = '''
-name: <name>\tFind by Authors <name>.
-tag: <tag>\tFind by <tag>.
-tags: <tag>\tFind by <tags>.
+name: <name>\tFind by Author(s) <name>. Case insensitive, the names must be separated by commas. Examples: 
+    \tname: Albert Einstein
+    \tname: steve, albert
+tag: <tag>\tFind by <tag>. Case insensitive, the tags must be separated by commas. Examples:
+    \ttag: LIVE
+    \ttag: miracle,success
+tags: <tag>\tFind by <tags>. Case sensitive, the tags must be separated by commas. 
+    \tEvery tag in tags (list of values) provided is in query. Examples:
+    \ttags: deep-thoughts,change
 exit\tTerminate program.
 '''
 
@@ -55,7 +61,7 @@ class InputToParser(InterfaceInput):
             Returns:
                 list command of user input (list): list of commands (list of strings).
         """
-        user_input = input(request)
+        user_input = input(request).lower()
         user_input = user_input.strip().split(':')
         if len(user_input) > 1:
             user_input = [user_input[0]] + user_input[1].strip().split(',')
@@ -120,14 +126,14 @@ class Quote_Finder():
     @cache
     @staticmethod
     def search_by_author(author: str) -> Quote.objects:
-        print('!!! First once without cache!________________________')
+        print('____ If you see the following message: Searching - the first time without cache! ____')
         return Quote.objects(author=Author.objects(fullname__istartswith=author).first().id)
     
     @cache
     @staticmethod
     def search_by_tag(tag: str) -> Quote.objects:
-        print('!!! First once without cache!________________________')
-        return
+        print('____ If you see the following message: Searching - the first time without cache! ____')
+        return Quote.objects(tags__icontains=tag)
     
     @classmethod
     def command_handler(cls, request: list) -> Optional[list]:
@@ -139,13 +145,15 @@ class Quote_Finder():
                 result = [Quote_Finder.search_by_author(author) for author in authors]
                 
             case 'tag':
-                tag = request[1].strip()
-                result = [Quote.objects(tags__icontains=tag)]
+                # tag = request[1].strip()
+                # result = [Quote.objects(tags__icontains=tag)]
+                tags = [tag.strip() for tag in request[1:]]
+                result = [Quote_Finder.search_by_tag(tag) for tag in tags]
                 
             case 'tags':
                 tags = [tag.strip() for tag in request[1:]]
                 # https://docs.mongoengine.org/guide/querying.html#string-queries
-                result = [Quote.objects(tags__icontains=tag) for tag in tags]  
+                result = [Quote.objects(tags__all=tags)]  
                 
             case 'exit':
                 result = None
