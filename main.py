@@ -127,6 +127,7 @@ class QuoteFinder:
     @staticmethod
     def search_by_author(author: str) -> Quote.objects:
         print('____ If you see the following message: Searching - the first time without cache! ____')
+        # https://docs.mongoengine.org/guide/querying.html#string-queries
         return Quote.objects(author=Author.objects(fullname__istartswith=author).first().id)
     
     @cache
